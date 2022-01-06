@@ -31,8 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-## My Code ##
-src/main/java/com/ravi/interview/businessrulesengine/service
-src/main/java/com/ravi/interview/businessrulesengine/utils
