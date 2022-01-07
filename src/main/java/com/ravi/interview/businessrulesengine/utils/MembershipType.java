@@ -1,6 +1,5 @@
 package com.ravi.interview.businessrulesengine.utils;
 
-//Access levels in the order of upgrade
 public enum MembershipType {
     NO_MEMBERSHIP,
     ACCESS_1,

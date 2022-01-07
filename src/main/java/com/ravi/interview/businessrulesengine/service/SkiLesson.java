@@ -7,7 +7,7 @@ import com.ravi.interview.businessrulesengine.utils.ShippingLabelType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SkiLesson extends PurchasedProduct{
+public class SkiLesson extends PurchasedProduct {
     MembershipType membershipLevel;
 
     public SkiLesson() {

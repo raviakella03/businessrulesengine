@@ -5,27 +5,15 @@ import com.ravi.interview.businessrulesengine.utils.ProductType;
 import com.ravi.interview.businessrulesengine.utils.ShippingLabelType;
 import lombok.extern.slf4j.Slf4j;
 
-
-//packaging slip - original
-//commission to agent
-
 @Slf4j
 public class PhysicalProduct extends PurchasedProduct {
-//    String shippingAddress;
+
 
     public PhysicalProduct() {
         this.productType = ProductType.PHYSICAL_PRODUCT;
         this.labelType = ShippingLabelType.ORIGINAL;
         this.commissionPayment = true;
     }
-
-    /*public String getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }*/
 
     public String processPhysicalProductOrder() {
         String returnValue;

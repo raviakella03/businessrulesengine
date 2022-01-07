@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Book extends PurchasedProduct {
-//    String shippingAddress;
     int quantity;
 
     public Book() {
@@ -23,14 +22,6 @@ public class Book extends PurchasedProduct {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
-    /*public String getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }*/
 
     public String processBookOrder() {
         String returnValue;

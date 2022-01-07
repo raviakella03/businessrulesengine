@@ -70,15 +70,16 @@ public class OrderActions {
         String returnValue = "";
         if (purchasedProduct.isCommissionPayment()) {
             returnValue = "Agent commission sent.";
+            log.info(returnValue);
         } else {
             returnValue = "No commission to agent";
+            log.info(returnValue);
         }
         return returnValue;
     }
 
     public String activateMembership(Membership membership, MembershipType membershipType) {
         String returnValue;
-        //call a setter to set the membership level
         membership.setMembershipLevel(membershipType);
         if (membership.getMembershipLevel().equals(membershipType)) {
             returnValue = "Activated " + membership.getName() + " - " + membership.getMembershipLevel() + " for " + membership.getShippingAddress().split("@")[0] + ".";
@@ -112,11 +113,11 @@ public class OrderActions {
 
     public String addSkiLesson(SkiLesson skiLesson, MembershipType membershipType) {
         String returnValue;
-        if(skiLesson.getMembershipLevel().equals(MembershipType.SKI_LESSON_ONLY) || skiLesson.getMembershipLevel().equals(MembershipType.FULL_ACCESS_SKI_LESSON)) {
+        if (skiLesson.getMembershipLevel().equals(MembershipType.SKI_LESSON_ONLY) || skiLesson.getMembershipLevel().equals(MembershipType.FULL_ACCESS_SKI_LESSON)) {
             returnValue = "Ski Lesson already available for you along with Free First-Aid video.";
         } else if (skiLesson.getMembershipLevel().equals(membershipType)) {
             returnValue = "Invalid membership level selected.";
-        } else if (skiLesson.getMembershipLevel().equals(MembershipType.NO_SKI_LESSON) && membershipType.equals(MembershipType.SKI_LESSON_ONLY)){
+        } else if (skiLesson.getMembershipLevel().equals(MembershipType.NO_SKI_LESSON) && membershipType.equals(MembershipType.SKI_LESSON_ONLY)) {
             skiLesson.setMembershipLevel(membershipType);
             if (skiLesson.getMembershipLevel().equals(membershipType)) {
                 returnValue = "Ski Lesson purchased successfully.";
@@ -130,6 +131,7 @@ public class OrderActions {
         }
         return returnValue;
     }
+
     public String addFreeFirstAidVideo(String shippingAddress) {
         return "Added a free \"First Aid\" video to your purchase.";
     }

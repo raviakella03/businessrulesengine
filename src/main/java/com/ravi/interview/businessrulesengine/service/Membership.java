@@ -17,14 +17,6 @@ public class Membership extends PurchasedProduct {
         this.commissionPayment = false;
     }
 
-    /*public String getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }*/
-
     public MembershipType getMembershipLevel() {
         return membershipLevel;
     }
