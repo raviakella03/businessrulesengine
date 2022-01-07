@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 //commission to agent
 
 @Slf4j
-public class PhysicalProduct extends PurchasedProduct{
+public class PhysicalProduct extends PurchasedProduct {
     String shippingAddress;
 
     public PhysicalProduct() {
@@ -25,7 +25,7 @@ public class PhysicalProduct extends PurchasedProduct{
         this.shippingAddress = shippingAddress;
     }
 
-    public String processPhysicalProductOrder () {
+    public String processPhysicalProductOrder() {
         String returnValue;
         OrderActions orderActions = new OrderActions();
 
@@ -37,9 +37,13 @@ public class PhysicalProduct extends PurchasedProduct{
 
         if (null != this.getShippingAddress()) {
             returnValue = orderActions.printLabel(this);
-            returnValue = returnValue + "\n" + orderActions.sendCommissionToAgent(this);
+            if (returnValue.equals("Invalid shipping label type")) {
+                returnValue += ". Not processing the order";
+            } else {
+                returnValue += "\n" + orderActions.sendCommissionToAgent(this);
+            }
         } else {
-            returnValue = "Invalid/No shipping address received";
+            returnValue = "Invalid/No shipping address received. Not processing the order";
         }
         return returnValue;
     }

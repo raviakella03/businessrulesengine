@@ -1,18 +1,36 @@
 package com.ravi.interview.businessrulesengine.utils;
 
+import com.ravi.interview.businessrulesengine.service.Book;
 import com.ravi.interview.businessrulesengine.service.Membership;
 import com.ravi.interview.businessrulesengine.service.PhysicalProduct;
 import com.ravi.interview.businessrulesengine.service.PurchasedProduct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class OrderActions {
     public String printLabel(PurchasedProduct purchasedProduct) {
         String returnValue;
-        if (purchasedProduct.getLabelType() == (ShippingLabelType.ORIGINAL)) {
-            PhysicalProduct physicalProduct;
-            physicalProduct = (PhysicalProduct)purchasedProduct;
+
+        if (null == purchasedProduct) {
+            return "Invalid/null product received for label printing";
+        }
+        if (purchasedProduct instanceof PhysicalProduct && purchasedProduct.getLabelType() == ShippingLabelType.ORIGINAL) {
+            PhysicalProduct physicalProduct = (PhysicalProduct) purchasedProduct;
+
             returnValue = printOriginalShippingLabel(physicalProduct.getShippingAddress());
+
+        } else if (purchasedProduct instanceof Book && purchasedProduct.getLabelType() == ShippingLabelType.ORIGINAL_DUPLICATE) {
+            Book purchasedBook = (Book) purchasedProduct;
+
+            returnValue = printOriginalShippingLabel(purchasedBook.getShippingAddress());
+
+            if (returnValue.startsWith("Original")) {
+                returnValue += "\n" + printDuplicateShippingLabel(purchasedBook.getShippingAddress());
+            } else {
+                log.info(returnValue);
+            }
         } else {
-            returnValue = "No shipping label needed";
+            returnValue = "Invalid shipping label type";
         }
         return returnValue;
     }
@@ -20,9 +38,11 @@ public class OrderActions {
     public String printOriginalShippingLabel(String shippingAddress) {
         String returnValue;
         if (null != shippingAddress) {
+            log.info("Printing original shipping label");
             returnValue = "Original Shipping Label\n" + shippingAddress;
         } else {
-            return "No Shipping address set for order processing";
+            returnValue = "No Shipping address received for order processing";
+            log.error(returnValue);
         }
         return returnValue;
     }
@@ -30,9 +50,11 @@ public class OrderActions {
     public String printDuplicateShippingLabel(String shippingAddress) {
         String returnValue = "-----------------------------------------------\n";
         if (null != shippingAddress) {
+            log.info("Printing duplicate shipping label for royalty");
             returnValue += "Duplicate Shipping Label\n" + shippingAddress;
         } else {
-            return "No Shipping address set for order processing";
+            returnValue = "No Shipping address set for order processing";
+            log.error(returnValue);
         }
         return returnValue;
     }
@@ -40,7 +62,7 @@ public class OrderActions {
     public String sendCommissionToAgent(PurchasedProduct purchasedProduct) {
         String returnValue = "";
         if (purchasedProduct.isCommissionPayment()) {
-            returnValue = "Agent commission sent";
+            returnValue = "Agent commission sent.";
         } else {
             returnValue = "No commission to agent";
         }

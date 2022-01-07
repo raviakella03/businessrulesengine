@@ -4,6 +4,6 @@ public enum ProductType {
     PHYSICAL_PRODUCT,
     BOOK,
     MEMBERSHIP,
-    UPGRADE_MEMBERSHIP,
+    UPDATE_MEMBERSHIP,
     SKI_LESSON_VIDEO
 }
