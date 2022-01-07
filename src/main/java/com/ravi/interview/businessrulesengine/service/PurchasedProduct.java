@@ -9,6 +9,7 @@ public abstract class PurchasedProduct {
     ShippingLabelType labelType;
     boolean commissionPayment;
     double price;
+    String shippingAddress;
 
     public ProductType getProductType() {
         return productType;
@@ -48,5 +49,13 @@ public abstract class PurchasedProduct {
 
     public void setLabelType(ShippingLabelType labelType) {
         this.labelType = labelType;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 }

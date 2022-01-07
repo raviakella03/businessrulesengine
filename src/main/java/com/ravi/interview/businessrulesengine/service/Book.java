@@ -7,11 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Book extends PurchasedProduct {
-    String shippingAddress;
+//    String shippingAddress;
     int quantity;
 
     public Book() {
         this.productType = ProductType.BOOK;
+        this.labelType = ShippingLabelType.ORIGINAL_DUPLICATE;
+        this.commissionPayment = true;
     }
 
     public int getQuantity() {
@@ -22,23 +24,17 @@ public class Book extends PurchasedProduct {
         this.quantity = quantity;
     }
 
-    public String getShippingAddress() {
+    /*public String getShippingAddress() {
         return shippingAddress;
     }
 
     public void setShippingAddress(String shippingAddress) {
         this.shippingAddress = shippingAddress;
-    }
+    }*/
 
     public String processBookOrder() {
         String returnValue;
         OrderActions orderActions = new OrderActions();
-
-        log.info("Setting commission to agent as true");
-        this.setCommissionPayment(true);
-
-        log.info("Setting shipping label as Original");
-        this.setLabelType(ShippingLabelType.ORIGINAL_DUPLICATE);
 
         if (this.getQuantity() == 0) {
             returnValue = "No quantity received to send to royalty dept. Not processing the order.";

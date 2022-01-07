@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OrderProcessingTest {
 
     @Test
-    public void purchasePhysicalProductPositive() {
+    public void testPurchasePhysicalProductPositive() {
         PhysicalProduct physicalProduct = new PhysicalProduct();
         String shippingAddress = "Albert Museum\nLondon\nUK.";
         OrderProcessing orderProcessing = new OrderProcessing();
@@ -25,7 +25,7 @@ class OrderProcessingTest {
     }
 
     @Test
-    public void purchasePhysicalProductNegative_1() {
+    public void testPurchasePhysicalProductNegative_1() {
         PhysicalProduct physicalProduct = new PhysicalProduct();
         String shippingAddress = null;
         OrderProcessing orderProcessing = new OrderProcessing();
@@ -40,7 +40,7 @@ class OrderProcessingTest {
     }
 
     @Test
-    public void purchaseBookPositive() {
+    public void testPurchaseBookPositive() {
         Book purchasedBook = new Book();
         String shippingAddress = "Central Library\nLondon\nUK.";
         OrderProcessing orderProcessing = new OrderProcessing();
@@ -58,7 +58,7 @@ class OrderProcessingTest {
     }
 
     @Test
-    public void purchaseBookInvalidAddress() {
+    public void testPurchaseBookInvalidAddress() {
         Book purchasedBook = new Book();
         String shippingAddress = null;
         OrderProcessing orderProcessing = new OrderProcessing();
@@ -74,7 +74,7 @@ class OrderProcessingTest {
     }
 
     @Test
-    public void purchaseBookZeroQuantity() {
+    public void testPurchaseBookZeroQuantity() {
         Book purchasedBook = new Book();
         String shippingAddress = "Central Library\nLondon\nUK.";
         OrderProcessing orderProcessing = new OrderProcessing();
@@ -90,53 +90,161 @@ class OrderProcessingTest {
     }
 
     @Test
-    public void purchaseNewMembership() {
-        Membership membership = new Membership();
+    public void testNullPurchaseBookZeroQuantity() {
+        Book purchasedBook = new Book();
+        String shippingAddress = "Central Library\nLondon\nUK.";
+        OrderProcessing orderProcessing = new OrderProcessing();
+
+        purchasedBook.setName("Book of Boba Fett");
+        purchasedBook.setQuantity(0);
+        purchasedBook.setPrice(1000);
+        purchasedBook.setShippingAddress(shippingAddress);
+
+        purchasedBook = null;
+        String expectedOutput = "Invalid product received for order processing.";
+
+        assertEquals(expectedOutput, orderProcessing.processOrder(purchasedBook));
+    }
+
+    @Test
+    public void testPurchaseNewMembership() {
+        Membership membershipOrder = new Membership();
+        OrderProcessing orderProcessing = new OrderProcessing();
         String shippingAddress = "ravi@membership.com";
         String membershipName = "OTT";
         double membershipPrice = 10;
-        MembershipType membershipType = MembershipType.ACCESS_1;
-        OrderProcessing orderProcessing = new OrderProcessing();
+        MembershipType newMembershipLevel = MembershipType.ACCESS_1;
+
+        membershipOrder.setName(membershipName);
+        membershipOrder.setPrice(membershipPrice);
+        membershipOrder.setShippingAddress(shippingAddress);
 
         String expectedOutput = "Activated " + membershipName + " - " + MembershipType.ACCESS_1 + " for " + shippingAddress.split("@")[0] + ".";
-        expectedOutput += "Confirmation mail sent to " + shippingAddress;
+        expectedOutput += "\nConfirmation mail sent to " + shippingAddress + ".";
 
-        assertEquals(expectedOutput, orderProcessing.processOrder(membershipName, shippingAddress, membershipPrice, membershipType, membership));
+        assertEquals(expectedOutput, orderProcessing.processOrder(membershipOrder, newMembershipLevel));
     }
 
     @Test
-    public void upgradeMembership() {
-        Membership membership = new Membership();
+    public void testUpgradeMembership() {
+        Membership membershipOrder = new Membership();
         String shippingAddress = "ravi@membership.com";
         String membershipName = "OTT";
         double membershipPrice = 100;
         MembershipType existingMembershipLevel = MembershipType.ACCESS_2;
-        MembershipType newMembershipLevel = MembershipType.FULL_ACCESS;
+        MembershipType newMembershipLevel = MembershipType.FULL_ACCESS_NO_SKI_LESSON;
 
         OrderProcessing orderProcessing = new OrderProcessing();
 
-        membership.setName(membershipName);
-        membership.setMembershipLevel(existingMembershipLevel);
+        membershipOrder.setName(membershipName);
+        membershipOrder.setPrice(membershipPrice);
+        membershipOrder.setShippingAddress(shippingAddress);
+        membershipOrder.setMembershipLevel(existingMembershipLevel);
 
         String expectedOutput = "Changed membership level for " + shippingAddress.split("@")[0];
         expectedOutput += "\nOld: " + existingMembershipLevel + "\nNew: " + newMembershipLevel;
-        expectedOutput += "Confirmation mail sent to " + shippingAddress;
+        expectedOutput += "\n" + "Confirmation mail sent to " + shippingAddress + ".";
 
-        assertEquals(expectedOutput, orderProcessing.processOrder(membershipName, shippingAddress, membershipPrice, newMembershipLevel, membership));
+        assertEquals(expectedOutput, orderProcessing.processOrder(membershipOrder, newMembershipLevel));
     }
 
     @Test
-    public void removeMembership() {
-        Membership membership = new Membership();
+    public void testNullUpgradeMembership() {
+        Membership membershipOrder = new Membership();
         String shippingAddress = "ravi@membership.com";
         String membershipName = "OTT";
         double membershipPrice = 100;
         MembershipType existingMembershipLevel = MembershipType.ACCESS_2;
-        MembershipType newMembershipLevel = MembershipType.FULL_ACCESS;
+        MembershipType newMembershipLevel = MembershipType.FULL_ACCESS_NO_SKI_LESSON;
+
         OrderProcessing orderProcessing = new OrderProcessing();
 
-        String expectedOutput = "Removed membership for " + shippingAddress.split("@")[0] + ".";
+        membershipOrder.setName(membershipName);
+        membershipOrder.setPrice(membershipPrice);
+        membershipOrder.setShippingAddress(shippingAddress);
+        membershipOrder.setMembershipLevel(existingMembershipLevel);
 
-        assertEquals(expectedOutput, orderProcessing.processOrder(membershipName, shippingAddress, membershipPrice, newMembershipLevel, membership));
+        String expectedOutput = "Invalid membership order received.";
+        membershipOrder = null;
+        assertEquals(expectedOutput, orderProcessing.processOrder(membershipOrder, newMembershipLevel));
     }
+
+    @Test
+    public void testUpgradeMembershipNullMembershipType() {
+        Membership membershipOrder = new Membership();
+        String shippingAddress = "ravi@membership.com";
+        String membershipName = "OTT";
+        double membershipPrice = 100;
+        MembershipType existingMembershipLevel = MembershipType.ACCESS_2;
+        MembershipType newMembershipLevel = MembershipType.FULL_ACCESS_NO_SKI_LESSON;
+
+        OrderProcessing orderProcessing = new OrderProcessing();
+
+        membershipOrder.setName(membershipName);
+        membershipOrder.setPrice(membershipPrice);
+        membershipOrder.setShippingAddress(shippingAddress);
+        membershipOrder.setMembershipLevel(existingMembershipLevel);
+
+        String expectedOutput = "Invalid membership type received.";
+        newMembershipLevel = null;
+        assertEquals(expectedOutput, orderProcessing.processOrder(membershipOrder, newMembershipLevel));
+    }
+
+    @Test
+    public void testSkiLessonPurchase() {
+        SkiLesson skiLesson = new SkiLesson();
+        String shippingAddress = "ravi@membership.com";
+        MembershipType newMembershipType = MembershipType.SKI_LESSON_ONLY;
+        String videoName = "Ski Lesson";
+        double videoPrice = 20;
+
+        OrderProcessing orderProcessing = new OrderProcessing();
+
+        skiLesson.setName(videoName);
+        skiLesson.setPrice(videoPrice);
+        skiLesson.setShippingAddress(shippingAddress);
+
+        String expectedOutput = "Ski Lesson purchased successfully.\nAdded a free \"First Aid\" video to your purchase.";
+
+        assertEquals(expectedOutput, orderProcessing.processOrder(skiLesson, newMembershipType));
+    }
+
+    @Test
+    public void testSkiLessonPurchaseWrongMembershipLevel() {
+        SkiLesson skiLesson = new SkiLesson();
+        String shippingAddress = "ravi@membership.com";
+        MembershipType newMembershipType = MembershipType.NO_MEMBERSHIP;
+        String videoName = "Ski Lesson";
+        double videoPrice = 20;
+
+        OrderProcessing orderProcessing = new OrderProcessing();
+
+        skiLesson.setName(videoName);
+        skiLesson.setPrice(videoPrice);
+        skiLesson.setShippingAddress(shippingAddress);
+
+        String expectedOutput = "Invalid Ski lesson type received.";
+
+        assertEquals(expectedOutput, orderProcessing.processOrder(skiLesson, newMembershipType));
+    }
+
+    @Test
+    public void testSkiLessonPurchaseNullMembershipLevel() {
+        SkiLesson skiLesson = new SkiLesson();
+        String shippingAddress = "ravi@membership.com";
+        MembershipType newMembershipType = MembershipType.SKI_LESSON_ONLY;
+        String videoName = "Ski Lesson";
+        double videoPrice = 20;
+
+        OrderProcessing orderProcessing = new OrderProcessing();
+
+        skiLesson.setName(videoName);
+        skiLesson.setPrice(videoPrice);
+        skiLesson.setShippingAddress(shippingAddress);
+
+        String expectedOutput = "Ski Lesson type received as null.";
+        newMembershipType = null;
+        assertEquals(expectedOutput, orderProcessing.processOrder(skiLesson, newMembershipType));
+    }
+
 }

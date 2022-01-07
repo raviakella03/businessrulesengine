@@ -1,9 +1,6 @@
 package com.ravi.interview.businessrulesengine.utils;
 
-import com.ravi.interview.businessrulesengine.service.Book;
-import com.ravi.interview.businessrulesengine.service.Membership;
-import com.ravi.interview.businessrulesengine.service.PhysicalProduct;
-import com.ravi.interview.businessrulesengine.service.PurchasedProduct;
+import com.ravi.interview.businessrulesengine.service.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -29,10 +26,20 @@ public class OrderActions {
             } else {
                 log.info(returnValue);
             }
+        } else if (purchasedProduct instanceof Membership && purchasedProduct.getLabelType() == ShippingLabelType.EMAIL) {
+            Membership membershipOrder = (Membership) purchasedProduct;
+            returnValue = sendConfirmationToCustomer(membershipOrder.getShippingAddress());
+        } else if (purchasedProduct instanceof SkiLesson && purchasedProduct.getLabelType() == ShippingLabelType.EMAIL) {
+            SkiLesson skiLesson = (SkiLesson) purchasedProduct;
+            returnValue = addFreeFirstAidVideo(skiLesson.getShippingAddress());
         } else {
             returnValue = "Invalid shipping label type";
         }
         return returnValue;
+    }
+
+    private String sendConfirmationToCustomer(String shippingAddress) {
+        return "Confirmation mail sent to " + shippingAddress + ".";
     }
 
     public String printOriginalShippingLabel(String shippingAddress) {
@@ -69,15 +76,61 @@ public class OrderActions {
         return returnValue;
     }
 
-    public String activateMembership(Membership membership) {
+    public String activateMembership(Membership membership, MembershipType membershipType) {
+        String returnValue;
         //call a setter to set the membership level
-        //call a getter to get the updated membership level
-        //send email to the customer about the membership activation or upgrade
-        return null;
+        membership.setMembershipLevel(membershipType);
+        if (membership.getMembershipLevel().equals(membershipType)) {
+            returnValue = "Activated " + membership.getName() + " - " + membership.getMembershipLevel() + " for " + membership.getShippingAddress().split("@")[0] + ".";
+            returnValue += "\n" + printLabel(membership);
+        } else {
+            returnValue = "Error while activating membership.";
+        }
+        return returnValue;
     }
 
-    public String addFreeFirstAidVideo() {
-        //call print Label and add first aid video to it
-        return null;
+    public String updateMembership(Membership membership, MembershipType membershipType) {
+        String returnValue;
+        MembershipType existingMembershipLevel = membership.getMembershipLevel();
+        if (membership.getMembershipLevel().equals(MembershipType.NO_MEMBERSHIP)) {
+            log.info("Membership activation received. Activating membership.");
+            returnValue = activateMembership(membership, membershipType);
+        } else {
+            log.info("Updating membership level for " + membership.getShippingAddress().split("@")[0] + " from " +
+                    membership.getMembershipLevel() + " to " + membershipType);
+            membership.setMembershipLevel(membershipType);
+            if (membership.getMembershipLevel().equals(membershipType)) {
+                returnValue = "Changed membership level for " + membership.getShippingAddress().split("@")[0];
+                returnValue += "\nOld: " + existingMembershipLevel + "\nNew: " + membership.getMembershipLevel();
+                returnValue += "\n" + printLabel(membership);
+            } else {
+                returnValue = "Error while activating membership.";
+            }
+        }
+        return returnValue;
+    }
+
+    public String addSkiLesson(SkiLesson skiLesson, MembershipType membershipType) {
+        String returnValue;
+        if(skiLesson.getMembershipLevel().equals(MembershipType.SKI_LESSON_ONLY) || skiLesson.getMembershipLevel().equals(MembershipType.FULL_ACCESS_SKI_LESSON)) {
+            returnValue = "Ski Lesson already available for you along with Free First-Aid video.";
+        } else if (skiLesson.getMembershipLevel().equals(membershipType)) {
+            returnValue = "Invalid membership level selected.";
+        } else if (skiLesson.getMembershipLevel().equals(MembershipType.NO_SKI_LESSON) && membershipType.equals(MembershipType.SKI_LESSON_ONLY)){
+            skiLesson.setMembershipLevel(membershipType);
+            if (skiLesson.getMembershipLevel().equals(membershipType)) {
+                returnValue = "Ski Lesson purchased successfully.";
+                returnValue += "\n" + printLabel(skiLesson);
+            } else {
+                returnValue = "Error while purchasing Ski Lesson";
+                log.error(returnValue);
+            }
+        } else {
+            returnValue = "Invalid Ski lesson type received.";
+        }
+        return returnValue;
+    }
+    public String addFreeFirstAidVideo(String shippingAddress) {
+        return "Added a free \"First Aid\" video to your purchase.";
     }
 }
