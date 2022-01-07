@@ -8,8 +8,7 @@ public class OrderActions {
     public String printLabel(PurchasedProduct purchasedProduct) {
         String returnValue;
         if (purchasedProduct.getLabelType() == (ShippingLabelType.ORIGINAL)) {
-//            returnValue = "Original Shipping Label";
-            PhysicalProduct physicalProduct = new PhysicalProduct();
+            PhysicalProduct physicalProduct;
             physicalProduct = (PhysicalProduct)purchasedProduct;
             returnValue = printOriginalShippingLabel(physicalProduct.getShippingAddress());
         } else {
@@ -19,10 +18,20 @@ public class OrderActions {
     }
 
     public String printOriginalShippingLabel(String shippingAddress) {
-        String returnValue = null;
+        String returnValue;
         if (null != shippingAddress) {
             returnValue = "Original Shipping Label\n" + shippingAddress;
-        } else if (null == shippingAddress || "".equals(shippingAddress)){
+        } else {
+            return "No Shipping address set for order processing";
+        }
+        return returnValue;
+    }
+
+    public String printDuplicateShippingLabel(String shippingAddress) {
+        String returnValue = "-----------------------------------------------\n";
+        if (null != shippingAddress) {
+            returnValue += "Duplicate Shipping Label\n" + shippingAddress;
+        } else {
             return "No Shipping address set for order processing";
         }
         return returnValue;
@@ -49,5 +58,4 @@ public class OrderActions {
         //call print Label and add first aid video to it
         return null;
     }
-
 }

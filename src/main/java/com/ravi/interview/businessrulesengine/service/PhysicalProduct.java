@@ -3,11 +3,13 @@ package com.ravi.interview.businessrulesengine.service;
 import com.ravi.interview.businessrulesengine.utils.OrderActions;
 import com.ravi.interview.businessrulesengine.utils.ProductType;
 import com.ravi.interview.businessrulesengine.utils.ShippingLabelType;
+import lombok.extern.slf4j.Slf4j;
 
 
 //packaging slip - original
 //commission to agent
 
+@Slf4j
 public class PhysicalProduct extends PurchasedProduct{
     String shippingAddress;
 
@@ -24,13 +26,20 @@ public class PhysicalProduct extends PurchasedProduct{
     }
 
     public String processPhysicalProductOrder () {
-        String returnValue = null;
+        String returnValue;
         OrderActions orderActions = new OrderActions();
-        if (null == this.getShippingAddress()) {
-            returnValue = "No shipping address sent - received (\"null\")";
-        } else {
+
+        log.info("Setting commission to agent as true");
+        this.setCommissionPayment(true);
+
+        log.info("Setting shipping label as Original");
+        this.setLabelType(ShippingLabelType.ORIGINAL);
+
+        if (null != this.getShippingAddress()) {
             returnValue = orderActions.printLabel(this);
             returnValue = returnValue + "\n" + orderActions.sendCommissionToAgent(this);
+        } else {
+            returnValue = "Invalid/No shipping address received";
         }
         return returnValue;
     }
