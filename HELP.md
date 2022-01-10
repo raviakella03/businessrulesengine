@@ -1,6 +1,10 @@
 # Getting Started
 Problem Statement 2: Business Rules Engine
-Imagine you’re writing an order processing application for a large company. In the past, this company used a fairly random mixture of manual and ad-hoc automated business practices to handle orders; they now want to put all these various ways of hanadling orders together into one whole: your application. After a full day of workshops you have gathered the following set of rules which need to be managed by the new system.
+Imagine you’re writing an order processing application for a large company. 
+In the past, this company used a fairly random mixture of manual and ad-hoc automated business practices to handle orders;
+they now want to put all these various ways of hanadling orders together into one whole: your application.
+After a full day of workshops you have gathered the following set of rules which need to be managed by the new system.
+
 - If the payment is for a physical product, generate a packing slip for shipping.
 - If the payment is for a book, create a duplicate packing slip for the royalty department.
 - If the payment is for a membership, activate that membership.
